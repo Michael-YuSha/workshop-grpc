@@ -20,7 +20,7 @@ public class TranslateServiceImpl extends TranslateGrpc.TranslateImplBase {
 		Repo.save(uuid, request.toByteArray());
 		ResponseKeyMsg response = ResponseKeyMsg.newBuilder().setKey(uuid).build();
 		responseObserver.onNext(response);
-		responseObserver.onCompleted();		
+		responseObserver.onCompleted();
 	}
 
 	@Override
@@ -30,12 +30,39 @@ public class TranslateServiceImpl extends TranslateGrpc.TranslateImplBase {
 		try {
 			TranslateStringListMsg response = TranslateStringListMsg.parseFrom(bytes);
 			responseObserver.onNext(response);
-			responseObserver.onCompleted();		
+			responseObserver.onCompleted();
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
 		}
 	}
 
-	
-	
+	@Override
+	public StreamObserver<TranslateStringMsg> translateChat(StreamObserver<TranslateStringMsg> responseObserver) {
+		
+		return new StreamObserver<TranslateStringMsg>() {
+			private Language lang = null;
+			
+			@Override
+			public void onNext(TranslateStringMsg msg) {
+				if (this.lang == null) {
+					lang = msg.getLang();
+				} else {
+					String transLine = Utils.translate(lang.name(), msg.getLine());
+					TranslateStringMsg responseMsg = TranslateStringMsg.newBuilder(msg).setLine(transLine).build();
+					responseObserver.onNext(responseMsg);
+				}
+			}
+
+			@Override
+			public void onError(Throwable t) {
+				System.out.println("routeChat cancelled");
+			}
+
+			@Override
+			public void onCompleted() {
+				responseObserver.onCompleted();
+			}
+		};
+	}
+
 }

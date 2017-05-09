@@ -43,6 +43,7 @@ service Translate {
   rpc Translate(TranslateStringMsg) returns (TranslateStringMsg) {}
   rpc TranslateList(TranslateStringListMsg) returns (ResponseKeyMsg) {}
   rpc RetrieveTranslateList(ResponseKeyMsg) returns (TranslateStringListMsg) {}
+  rpc TranslateChat(stream TranslateStringMsg) returns (stream TranslateStringMsg) {}
 }
 
 enum Language {

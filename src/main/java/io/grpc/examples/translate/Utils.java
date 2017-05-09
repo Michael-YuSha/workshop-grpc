@@ -12,13 +12,22 @@ public class Utils {
 
 	public static int askAction() {
 		System.out.println("0 : Quit");
-		System.out.println("1 : Simple blocking translate request");
-		System.out.println("2 : Async Nonblocking translate request");
-		System.out.println("3 : Async stream request");
+		System.out.println("1 : Simple blocking 1 line translate request");
+		System.out.println("2 : Multi line translate request");
+		System.out.println("3 : Retrieve translated multi lines");
+		System.out.println("4 : Async translate chat");
 		String s = ask("Welke actie wil je uitvoeren ? : ");
 		return new Integer(s).intValue();
 	}
-	
+
+	public static Language askLanguage() {
+		return toLanguage(ask("Welke taal [UK,FR,DE,IT,ES] : "));
+	}
+
+	public static String askLineToTranslate() {
+		return ask("line (''=quit) : ");
+	}
+
 	public static String translate(final String lang, final String line) {
 		return lang + " " + line + " " + lang;
 	}
@@ -36,5 +45,9 @@ public class Utils {
 			e.printStackTrace();
 			return null;
 		}	
+	}
+	
+	public static Language toLanguage(final String lang) {
+		return Language.valueOf(lang.toUpperCase());
 	}
 }

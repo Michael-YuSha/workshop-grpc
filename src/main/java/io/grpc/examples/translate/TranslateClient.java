@@ -31,13 +31,14 @@
 
 package io.grpc.examples.translate;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.examples.translate.TranslateGrpc.TranslateBlockingStub;
 import io.grpc.examples.translate.TranslateGrpc.TranslateStub;
+import io.grpc.stub.StreamObserver;
 
 /**
  * Sample client code that makes gRPC calls to the server.
@@ -54,8 +55,9 @@ public class TranslateClient {
 				client.multiLineBlockingTranslateRequest();
 			} else if (action == 3) {
 				client.retrieveMultiLineTranslateRequest();
+			} else if (action == 4) {
+				client.asyncTranslateChat();
 			}
-
 			action = Utils.askAction();
 		}
 		try {
@@ -65,14 +67,12 @@ public class TranslateClient {
 		}
 	}
 
-	private static final Logger logger = Logger.getLogger(TranslateClient.class.getName());
-
 	private final ManagedChannel channel;
 	private final TranslateBlockingStub blockingStub;
 	private final TranslateStub asyncStub;
 
 	private String responseKey;
-	
+
 	/** Construct client for accessing Translate server at {@code host:port}. */
 	public TranslateClient(String host, int port) {
 		this(ManagedChannelBuilder.forAddress(host, port).usePlaintext(true));
@@ -91,27 +91,21 @@ public class TranslateClient {
 	public void shutdown() throws InterruptedException {
 		channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
 	}
-	
-	//---------- methods to be implemented --------------------
+
+	// ---------- methods to be implemented --------------------
 
 	public void singleLineBlockingTranslateRequest() {
-		final TranslateStringMsg request = TranslateStringMsg.newBuilder()
-				.setLang(Language.DE)
-				.setLine("regel 1")
+		final TranslateStringMsg request = TranslateStringMsg.newBuilder().setLang(Language.DE).setLine("regel 1")
 				.build();
-		
+
 		final TranslateStringMsg response = blockingStub.translate(request);
 		System.out.println(response.getLine());
 	}
 
 	public void multiLineBlockingTranslateRequest() {
-		final TranslateStringListMsg request = TranslateStringListMsg.newBuilder()
-				.setLang(Language.DE)
-				.addLines("regel 1")
-				.addLines("regel 2")
-				.addLines("regel 3")
-				.build();
-		
+		final TranslateStringListMsg request = TranslateStringListMsg.newBuilder().setLang(Language.DE)
+				.addLines("regel 1").addLines("regel 2").addLines("regel 3").build();
+
 		final ResponseKeyMsg response = blockingStub.translateList(request);
 		this.responseKey = response.getKey();
 		System.out.println("got key : " + this.responseKey);
@@ -121,5 +115,43 @@ public class TranslateClient {
 		final ResponseKeyMsg request = ResponseKeyMsg.newBuilder().setKey(this.responseKey).build();
 		final TranslateStringListMsg response = blockingStub.retrieveTranslateList(request);
 		response.getLinesList().forEach(System.out::println);
+	}
+
+	public CountDownLatch asyncTranslateChat() {
+		final CountDownLatch finishLatch = new CountDownLatch(1);
+		StreamObserver<TranslateStringMsg> requestObserver = asyncStub.translateChat(getObserver(finishLatch));
+
+		TranslateStringMsg msg = TranslateStringMsg.newBuilder().setLang(Utils.askLanguage()).build();
+		requestObserver.onNext(msg);
+		String line = Utils.askLineToTranslate();
+		while (!line.isEmpty()) {
+			msg = TranslateStringMsg.newBuilder().setLine(line).build();
+			requestObserver.onNext(msg);
+			line = Utils.askLineToTranslate();
+		}
+		// Mark the end of requests
+		requestObserver.onCompleted();
+		return finishLatch;
+	}
+
+	private StreamObserver<TranslateStringMsg> getObserver(final CountDownLatch finishLatch) {
+		return new StreamObserver<TranslateStringMsg>() {
+
+			@Override
+			public void onNext(TranslateStringMsg msg) {
+				System.out.println(msg.getLine());
+			}
+
+			@Override
+			public void onError(Throwable t) {
+				finishLatch.countDown();
+			}
+
+			@Override
+			public void onCompleted() {
+				System.out.println("Finished ...");
+				finishLatch.countDown();
+			}
+		};
 	}
 }
