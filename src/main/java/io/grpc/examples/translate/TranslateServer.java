@@ -23,7 +23,7 @@ public class TranslateServer {
 	}
 
 	public static boolean useSimpleServer() {
-		//TOOD-? return SECURE_SERVER; 
+		//TOOD-10 return SECURE_SERVER; 
 		return SIMPLE_SERVER;
 	}
 	
@@ -41,12 +41,12 @@ public class TranslateServer {
 	}
 
 	private Server buildSimpleServer() {
-		//TODO-1 : return een server zonder extra security. hint ServerBuilder en de impl class in deze package.
+		//TODO-4 : return een server zonder extra security. hint ServerBuilder en de impl class in deze package.
 		return null;
 	}
 
 	private Server buildSecureServer() throws IOException, CertificateException  {
-		//TODO-? : return een server met extra security. hint GrpcUtils 
+		//TODO-10 : return een server met extra security. hint GrpcUtils 
 		return null;
 	}
 

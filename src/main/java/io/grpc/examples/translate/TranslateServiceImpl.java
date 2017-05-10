@@ -6,17 +6,17 @@ import io.grpc.stub.StreamObserver;
 
 public class TranslateServiceImpl extends TranslateGrpc.TranslateImplBase {
 
-	//TODO-? implement de single translate rpc methode. 
+	//TODO-6 implement de single translate rpc methode. 
 	// hint: Utils.translate(..) om daadwerkelijk te 'vertalen' (helaas is google translate api niet meer gratis)
 	// zoe ook hints.txt 
 	
-	//TODO-? implement de translateList rpc methode. 
+	//TODO-7 implement de translateList rpc methode. 
 	// hint: zie Repo class om een message op te slaan en weer op te halen uit een 'database'
 
-	//TODO-? implement de retrieveTranslateList rpc methode. 
+	//TODO-8 implement de retrieveTranslateList rpc methode. 
 	// hint: xxxMsg.parseFrom(bytes) 
 
-	//TODO-? implement de translateChat bidirectional streaming rpc methode. 
+	//TODO-9 implement de translateChat bidirectional streaming rpc methode. 
 	//nb de client is zo gemaakt dat in eerste request de taal wordt gezet, en alle volgende requests een regel om te vertalen.
 	// zie verder hints.txt
 

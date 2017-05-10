@@ -87,18 +87,18 @@ public class TranslateClient {
 		} else {
 			channel = buildSecureChannel();
 		}
-		// TODO-1 maak de juiste stubs aan (zie hints.txt)
+		// TODO-5 maak de juiste stubs aan (zie hints.txt)
 		blockingStub = null; 
 		asyncStub = null;
 	}
 
 	private ManagedChannel buildSimpleChannel() {
-		//TODO-1 maak een niet secure channel aan.
+		//TODO-5 maak een niet secure channel aan.
 		return null;
 	}
 
 	private ManagedChannel buildSecureChannel() throws CertificateException, SSLException, IOException {
-		//TODO-1 maak een secure channel aan (zie GrpcUtils)
+		//TODO-10 maak een secure channel aan (zie GrpcUtils)
 		return null;
 	}
 
@@ -109,24 +109,24 @@ public class TranslateClient {
 	// ---------- methods to be implemented --------------------
 
 	public void singleLineBlockingTranslateRequest() {
-		//TODO-2 : roep de (blocking) translate methode aan met een request, waarin een taal en een regel om te vertalen zit.
+		//TODO-6 : roep de (blocking) translate methode aan met een request, waarin een taal en een regel om te vertalen zit.
 		System.out.println("todo: print de vertaalde regel");
 	}
 
 	public void multiLineBlockingTranslateRequest() {
-		//TODO-3 : roep de (blocking) translateList aan methode met een request, 
+		//TODO-7 : roep de (blocking) translateList aan methode met een request, 
 		// waarin een taal en een paar regels zitten om te vertalen.
-		this.responseKey = null; //TODO-3 vul deze met de key uit de response.
+		this.responseKey = null; // vul deze met de key uit de response.
 		System.out.println("Gor responseKey from server: " + responseKey);
 	}
 
 	public void retrieveMultiLineTranslateRequest() {
-		//TODO-4: roep de (blocking) retrieveTranslateList methode aan, met een request waarin responseKey van hierboven zit.
+		//TODO-8: roep de (blocking) retrieveTranslateList methode aan, met een request waarin responseKey van hierboven zit.
 		System.out.println("todo print alle vertaalde regels uit de response");
 	}
 
 	public CountDownLatch asyncTranslateChat() {
-		//TODO-5 : implement deze methoe waarbij async translateChat methide wordt aangeroepen.
+		//TODO-9 : implement deze methoe waarbij async translateChat methide wordt aangeroepen.
 		// zie hints.txt voor het implementeren van requestObserver en responseObserver
 		// nb: maak methode die voor het eerste request, de taal opgeeft
 		// en daarna wordt in een loop request verstuurd met een te vertalen regel. Zie:

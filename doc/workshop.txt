@@ -1,0 +1,64 @@
+Deze workshop grpc bestaat uit een korte theoretische inleiding, waarna hands-on een werkende grpc client/server moet worden gebouwd.
+Als alles goed gaat hebben we aan einde een secure chat applicatie die gebruikt kan worden om regels te vertalen.
+(nb ik had eigenlijk gebruik willen maken van google translate api, maar die is helaas niet meer gratis, dus heb ik mijn eigen translate engine
+gebouwd zie Utils.translate())
+
+TODO-1 : Project setup
+- Importeer in je favoriete ide, pom.xml file. Pas daarna de project properties zo aan, dat ook de volgende source folders gebuikt worden:
+ target/generated-sources/protobuf/grpc-java + target/generated-sources/protobuf/java
+- ignore de compile errors.
+
+TODO-2 : Definieer services en bijbehorende objecten in: translate.proto
+- definieer de service: Translate  (hoewel niet verplicht is het makkelijk om onderstaande namen letterlijk over te nemen)
+- met daarin 4 rpc methodes:
+1.  Translate met als parameter de message: TranslateStringMsg  en dezelfde return message: TranslateStringMsg
+2.  TranslateList met als parameter de message: TranslateStringListMsg en return message: ResponseKeyMsg
+3.  RetrieveTranslateList met als parameter de message: ResponseKeyMsg en return message: TranslateStringListMsg
+4.  TranslateChat met als streaming parameter de message: TranslateStringMsg en return streaming message: stream TranslateStringMsg
+- en definieer bovengenoemde protobuf messages:
+1. TranslateStringMsg met daarin een: Language : lang en string : line
+2. TranslateStringListMsg met daarin een: Language : lang en een lijst van (string : line)
+3. ResponseKeyMsg met daarin eem string : responseKey 
+
+TODO-3 : Compileer deze proto file
+- vanaf de cmd-line in de folder waar de pom.xml staat, tot de volgende buids succesvol zijn.
+mvn protobuf:compile
+mvn protobuf-custom
+- vergelijk tenslotte je translate.proto file met dezelfde file in doc\translate.proto.zip
+- refresh je workspace, waarna alle compile errors weg zouden moeten zijn.
+
+TODO-4 : Edit TranslateServer.java zodat deze gestart kan worden
+- modify buildSimpleServer (zie hints start unsecure server/client)
+- deze class zou nu zonder problemen als Java application kunnen starten.
+
+TODO-5 : Edit TranslateClient.java zodat deze gestart kan worden
+- modify buildSimpleChannel()  (zie hints start unsecure server/client)
+- deze class zou nu zonder problemen als Java application kunnen starten en via de console kun je deze ook weer stoppen.
+
+TODO-6 : Implementeer nu de eerste aktie, een single line translate 
+(deze vertaald 1 enkele regel en geeft resultaat direct weer terug)
+- server: zie todo-6 in TranslateServiceImpl 
+- client: zie todo-6 in TranslateClient
+(re)start server en client, en test action 1.
+
+TODO-7 : Implementeer nu de tweede aktie, een multi line translate, waarbij antwoord later wordt opgehaald.
+(deze vertaald meerdere regels maar geeft in eerste instantie allen een key (uuid) terug, waarmee later de vertaalde regels opgehaald kunnen worden)
+- server: zie todo-7 in TranslateServiceImpl 
+- client: zie todo-7 in TranslateClient
+(re)start server en client, en test action 2.
+
+TODO-8 : Implementeer nu de derde aktie, om het antwoord op te halen.
+- server: zie todo-8 in TranslateServiceImpl 
+- client: zie todo-8 in TranslateClient
+(re)start server en client, en test action 2 & 3 (in die volgorde)
+
+TODO-9 : Implementeer nu de vierde aktie, een vertaal chat.
+Bovengenoemde akties waren allemaal non-blocking non-streaming calls. Nu maken een async, streaming chat client/server applicatie.
+- server: zie todo-9 in TranslateServiceImpl 
+- client: zie todo-9 in TranslateClient
+(re)start server en client, en test action 4
+
+TODO-10 : In plaats van een unsecure client/server, nu een secure client/server setup.
+- server: zie todo-10 TranslateService (useSimpleServer() en buildSecureServer())
+- client: zie todo-10 TranslateClient
+

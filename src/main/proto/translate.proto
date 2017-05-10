@@ -36,15 +36,7 @@ option objc_class_prefix = "RTG";
 
 package translate;
 
-// Interface exported by the server.
-service Translate {
-  // A simple RPC.
-  // Obtain a single translation
-  rpc Translate(TranslateStringMsg) returns (TranslateStringMsg) {}
-  rpc TranslateList(TranslateStringListMsg) returns (ResponseKeyMsg) {}
-  rpc RetrieveTranslateList(ResponseKeyMsg) returns (TranslateStringListMsg) {}
-  rpc TranslateChat(stream TranslateStringMsg) returns (stream TranslateStringMsg) {}
-}
+// TODO-2 Definieer service Translate met 4 rpc service methodes (zie workshop.txt)
 
 enum Language {
 	NL = 0;
@@ -54,16 +46,5 @@ enum Language {
 	DE = 4;
 }
 
-message TranslateStringMsg {
-	Language lang = 1;
-	string line = 2;
-}
+// TODO-2 Definieer de drie protobuf messages.  (zie workshop.txt)
 
-message TranslateStringListMsg {
-	Language lang = 1;
-	repeated string lines = 2;
-}
-
-message ResponseKeyMsg {
-	string key = 1;
-}

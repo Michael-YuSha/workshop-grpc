@@ -1,0 +1,45 @@
+
+# Aanmaken van een protobuf message :
+- XxxMsg = XxxMsg.newBuilder().setDit(xxx).setDat(...).build();  //maak een nieuwe aan
+- XxxMsg = XxxMsg.newBuilder(oldMsg).setDit(...).setDat(...).build(); // maak een nieuwe ahv bestaande en pas aan.
+- XxxMsg = XxxMsg.parseFrom(bytes);  // deserialize een opgeslagen message
+ 
+# Starten van een unsecure server/client 
+- server: 
+server = ServerBuilder.forPort(int).addService(grpc-service-impl).build();
+server.start();
+
+- client: 
+channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext(true));
+blockingStub = XxxGrpc.newBlockingStub(channel);
+asyncStub = XxxGrpc.newStub(channel);
+  
+# Starten van een secure server / client
+- server: zie GrpcUtils.serverBuilder()
+- client: zie GrpcUtils.makeChannel()
+NB Bovenstaande GrpcUtils bevatten maar een van de mogelijke setups om een secure server/client vebinding op te zetten.
+Deze maakt gebruik van OpenSSL, en daarom moet de netty-tcnative-boringssl-static ook in de pom.xml staam!
+
+# Implement van een blocking (non streaming) rpc :
+- server: 
+maak class aan die extend van XxxGrpc.XxxImplBase en laat Eclipse de methodes implementeren.
+responseObserver.onNext(reponse-message);  //maak één response message aan.
+responseObserver.complete(); //en dit zorgt ervoor dat die daadwerkelijk verstuurd wordt.
+
+- client:
+maak een request message aan 
+en stuur deze met: blockingStub.rpc-methode(request-message);
+
+# Implement een assync en/of stream rpc:
+- server:
+Min of meer hetzelfde patroon als hierboven maar nu is er naast een responseObserver ook een StreamObserver<T> die geimplementeerd moet worden.
+Deze StreamObserver wordt naar de client gestuurd, en die kan met onNext(message) daar requests op zetten, en met onCompleted() aangeven dat de 
+stream sessie kan worden gestopt.
+
+ 
+
+
+
+
+
+
