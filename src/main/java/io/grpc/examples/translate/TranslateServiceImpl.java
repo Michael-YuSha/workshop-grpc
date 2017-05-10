@@ -6,63 +6,18 @@ import io.grpc.stub.StreamObserver;
 
 public class TranslateServiceImpl extends TranslateGrpc.TranslateImplBase {
 
-	@Override
-	public void translate(TranslateStringMsg request, StreamObserver<TranslateStringMsg> responseObserver) {
-		final TranslateStringMsg response = TranslateStringMsg.newBuilder()
-				.setLine(Utils.translate(request.getLang().name(), request.getLine())).build();
-		responseObserver.onNext(response);
-		responseObserver.onCompleted();
-	}
+	//TODO-? implement de single translate rpc methode. 
+	// hint: Utils.translate(..) om daadwerkelijk te 'vertalen' (helaas is google translate api niet meer gratis)
+	// zoe ook hints.txt 
+	
+	//TODO-? implement de translateList rpc methode. 
+	// hint: zie Repo class om een message op te slaan en weer op te halen uit een 'database'
 
-	@Override
-	public void translateList(TranslateStringListMsg request, StreamObserver<ResponseKeyMsg> responseObserver) {
-		final String uuid = Utils.uuid();
-		Repo.save(uuid, request.toByteArray());
-		ResponseKeyMsg response = ResponseKeyMsg.newBuilder().setKey(uuid).build();
-		responseObserver.onNext(response);
-		responseObserver.onCompleted();
-	}
+	//TODO-? implement de retrieveTranslateList rpc methode. 
+	// hint: xxxMsg.parseFrom(bytes) 
 
-	@Override
-	public void retrieveTranslateList(ResponseKeyMsg request, StreamObserver<TranslateStringListMsg> responseObserver) {
-		final String uuid = request.getKey();
-		final byte[] bytes = Repo.retrieve(uuid);
-		try {
-			TranslateStringListMsg response = TranslateStringListMsg.parseFrom(bytes);
-			responseObserver.onNext(response);
-			responseObserver.onCompleted();
-		} catch (InvalidProtocolBufferException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public StreamObserver<TranslateStringMsg> translateChat(StreamObserver<TranslateStringMsg> responseObserver) {
-		
-		return new StreamObserver<TranslateStringMsg>() {
-			private Language lang = null;
-			
-			@Override
-			public void onNext(TranslateStringMsg msg) {
-				if (this.lang == null) {
-					lang = msg.getLang();
-				} else {
-					String transLine = Utils.translate(lang.name(), msg.getLine());
-					TranslateStringMsg responseMsg = TranslateStringMsg.newBuilder(msg).setLine(transLine).build();
-					responseObserver.onNext(responseMsg);
-				}
-			}
-
-			@Override
-			public void onError(Throwable t) {
-				System.out.println("routeChat cancelled");
-			}
-
-			@Override
-			public void onCompleted() {
-				responseObserver.onCompleted();
-			}
-		};
-	}
+	//TODO-? implement de translateChat bidirectional streaming rpc methode. 
+	//nb de client is zo gemaakt dat in eerste request de taal wordt gezet, en alle volgende requests een regel om te vertalen.
+	// zie verder hints.txt
 
 }

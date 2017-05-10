@@ -23,6 +23,7 @@ public class TranslateServer {
 	}
 
 	public static boolean useSimpleServer() {
+		//TOOD-? return SECURE_SERVER; 
 		return SIMPLE_SERVER;
 	}
 	
@@ -40,13 +41,13 @@ public class TranslateServer {
 	}
 
 	private Server buildSimpleServer() {
-		return ServerBuilder.forPort(PORT).addService(new TranslateServiceImpl()).build();
+		//TODO-1 : return een server zonder extra security. hint ServerBuilder en de impl class in deze package.
+		return null;
 	}
 
 	private Server buildSecureServer() throws IOException, CertificateException  {
-		return GrpcUtils.serverBuilder(PORT, "/server1.pem", "/server1.key", "/ca.pem", SslProvider.OPENSSL)
-				.addService(new TranslateServiceImpl())
-				.build();
+		//TODO-? : return een server met extra security. hint GrpcUtils 
+		return null;
 	}
 
 	/** Start serving requests. */

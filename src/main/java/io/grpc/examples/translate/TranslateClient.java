@@ -87,17 +87,19 @@ public class TranslateClient {
 		} else {
 			channel = buildSecureChannel();
 		}
-		blockingStub = TranslateGrpc.newBlockingStub(channel);
-		asyncStub = TranslateGrpc.newStub(channel);
+		// TODO-1 maak de juiste stubs aan (zie hints.txt)
+		blockingStub = null; 
+		asyncStub = null;
 	}
 
 	private ManagedChannel buildSimpleChannel() {
-		return ManagedChannelBuilder.forAddress(TranslateServer.HOST, TranslateServer.PORT).usePlaintext(true).build();
+		//TODO-1 maak een niet secure channel aan.
+		return null;
 	}
 
 	private ManagedChannel buildSecureChannel() throws CertificateException, SSLException, IOException {
-		return GrpcUtils.makeChannel(TranslateServer.HOST, TranslateServer.PORT,
-				"/client.pem", "/client.key", "/ca.pem");
+		//TODO-1 maak een secure channel aan (zie GrpcUtils)
+		return null;
 	}
 
 	public void shutdown() throws InterruptedException {
@@ -107,42 +109,46 @@ public class TranslateClient {
 	// ---------- methods to be implemented --------------------
 
 	public void singleLineBlockingTranslateRequest() {
-		final TranslateStringMsg request = TranslateStringMsg.newBuilder().setLang(Language.DE).setLine("regel 1")
-				.build();
-
-		final TranslateStringMsg response = blockingStub.translate(request);
-		System.out.println(response.getLine());
+		//TODO-2 : roep de (blocking) translate methode aan met een request, waarin een taal en een regel om te vertalen zit.
+		System.out.println("todo: print de vertaalde regel");
 	}
 
 	public void multiLineBlockingTranslateRequest() {
-		final TranslateStringListMsg request = TranslateStringListMsg.newBuilder().setLang(Language.DE)
-				.addLines("regel 1").addLines("regel 2").addLines("regel 3").build();
-
-		final ResponseKeyMsg response = blockingStub.translateList(request);
-		this.responseKey = response.getKey();
-		System.out.println("got key : " + this.responseKey);
+		//TODO-3 : roep de (blocking) translateList aan methode met een request, 
+		// waarin een taal en een paar regels zitten om te vertalen.
+		this.responseKey = null; //TODO-3 vul deze met de key uit de response.
+		System.out.println("Gor responseKey from server: " + responseKey);
 	}
 
 	public void retrieveMultiLineTranslateRequest() {
-		final ResponseKeyMsg request = ResponseKeyMsg.newBuilder().setKey(this.responseKey).build();
-		final TranslateStringListMsg response = blockingStub.retrieveTranslateList(request);
-		response.getLinesList().forEach(System.out::println);
+		//TODO-4: roep de (blocking) retrieveTranslateList methode aan, met een request waarin responseKey van hierboven zit.
+		System.out.println("todo print alle vertaalde regels uit de response");
 	}
 
 	public CountDownLatch asyncTranslateChat() {
+		//TODO-5 : implement deze methoe waarbij async translateChat methide wordt aangeroepen.
+		// zie hints.txt voor het implementeren van requestObserver en responseObserver
+		// nb: maak methode die voor het eerste request, de taal opgeeft
+		// en daarna wordt in een loop request verstuurd met een te vertalen regel. Zie:
+		
 		final CountDownLatch finishLatch = new CountDownLatch(1);
-		StreamObserver<TranslateStringMsg> requestObserver = asyncStub.translateChat(getObserver(finishLatch));
+		StreamObserver<TranslateStringMsg> requestObserver = null; //maak de juiste stub
 
-		TranslateStringMsg msg = TranslateStringMsg.newBuilder().setLang(Utils.askLanguage()).build();
-		requestObserver.onNext(msg);
+		final Language taal = Utils.askLanguage();
+		// TODO: maak message voor het eerste request: XxxMsg msg = ....
+		
+		//TODO: stuur het request van hierboven naar de server
+		
 		String line = Utils.askLineToTranslate();
 		while (!line.isEmpty()) {
-			msg = TranslateStringMsg.newBuilder().setLine(line).build();
-			requestObserver.onNext(msg);
+			//TODO maak het volgende request, met daarin this.line om te vertalen
+			
+			//TOD en verstuur deze naar de server
 			line = Utils.askLineToTranslate();
 		}
-		// Mark the end of requests
-		requestObserver.onCompleted();
+		
+		// Breek de chat sessie nu af
+		// zie hints.txt
 		return finishLatch;
 	}
 
@@ -161,7 +167,7 @@ public class TranslateClient {
 
 			@Override
 			public void onCompleted() {
-				System.out.println("Finished ...");
+				System.out.println("Finished chat...");
 				finishLatch.countDown();
 			}
 		};
