@@ -31,8 +31,12 @@
 
 package io.grpc.examples.translate;
 
+import java.io.IOException;
+import java.security.cert.CertificateException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLException;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -45,8 +49,8 @@ import io.grpc.stub.StreamObserver;
  */
 public class TranslateClient {
 
-	public static void main(String[] args) throws InterruptedException {
-		TranslateClient client = new TranslateClient("localhost", TranslateServer.PORT);
+	public static void main(String[] args) throws CertificateException, SSLException, IOException, InterruptedException {
+		TranslateClient client = new TranslateClient();
 		int action = Utils.askAction();
 		while (action != 0) {
 			if (action == 1) {
@@ -73,19 +77,27 @@ public class TranslateClient {
 
 	private String responseKey;
 
-	/** Construct client for accessing Translate server at {@code host:port}. */
-	public TranslateClient(String host, int port) {
-		this(ManagedChannelBuilder.forAddress(host, port).usePlaintext(true));
-	}
-
-	/**
-	 * Construct client for accessing Translate server using the existing
-	 * channel.
-	 */
-	public TranslateClient(ManagedChannelBuilder<?> channelBuilder) {
-		channel = channelBuilder.build();
+	/** Construct client for accessing Translate server at {@code host:port}. 
+	 * @throws IOException 
+	 * @throws SSLException 
+	 * @throws CertificateException */
+	public TranslateClient() throws CertificateException, SSLException, IOException {
+		if (TranslateServer.useSimpleServer() == TranslateServer.SIMPLE_SERVER) {
+			channel = buildSimpleChannel();
+		} else {
+			channel = buildSecureChannel();
+		}
 		blockingStub = TranslateGrpc.newBlockingStub(channel);
 		asyncStub = TranslateGrpc.newStub(channel);
+	}
+
+	private ManagedChannel buildSimpleChannel() {
+		return ManagedChannelBuilder.forAddress(TranslateServer.HOST, TranslateServer.PORT).usePlaintext(true).build();
+	}
+
+	private ManagedChannel buildSecureChannel() throws CertificateException, SSLException, IOException {
+		return GrpcUtils.makeChannel(TranslateServer.HOST, TranslateServer.PORT,
+				"/client.pem", "/client.key", "/ca.pem");
 	}
 
 	public void shutdown() throws InterruptedException {
