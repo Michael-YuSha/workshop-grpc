@@ -23,7 +23,7 @@ public class TranslateServer {
 	}
 
 	public static boolean useSimpleServer() {
-		return SECURE_SERVER;
+		return SIMPLE_SERVER;
 	}
 	
 	private static final Logger logger = Logger.getLogger(RouteGuideServer.class.getName());
