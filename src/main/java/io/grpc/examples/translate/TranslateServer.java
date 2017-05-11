@@ -47,6 +47,7 @@ public class TranslateServer {
 
 	private Server buildSecureServer() throws IOException, CertificateException  {
 		//TODO-10 : return een server met extra security. hint GrpcUtils 
+		//met: chainFile:"/server1.pem",privateKey:"/server1.key",trustedCa:"/ca.pem", SslProvider.OPENSSL
 		return null;
 	}
 
