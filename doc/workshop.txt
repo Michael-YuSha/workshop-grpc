@@ -62,3 +62,7 @@ TODO-10 : In plaats van een unsecure client/server, nu een secure client/server 
 - server: zie todo-10 TranslateService (useSimpleServer() en buildSecureServer())
 - client: zie todo-10 TranslateClient
 
+TODO-11 : 
+Breid een message uit met een of meerderee properties, en voeg nog een rpc methode toe. 
+Genereer opnieuw de code (zie todo-3) en kijk wat de impact is in de workspace.
+
