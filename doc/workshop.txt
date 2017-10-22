@@ -9,7 +9,7 @@ TODO-1 : Project setup
 - ignore de compile errors.
 
 TODO-2 : Definieer services en bijbehorende objecten in: translate.proto
-- definieer de service: Translate  (hoewel niet verplicht is het makkelijk om onderstaande namen letterlijk over te nemen)
+- definieer de service: Translate  (best is om onderstaande namen letterlijk over te nemen)
 - met daarin 4 rpc methodes:
 1.  Translate met als parameter de message: TranslateStringMsg  en dezelfde return message: TranslateStringMsg
 2.  TranslateList met als parameter de message: TranslateStringListMsg en return message: ResponseKeyMsg
@@ -18,7 +18,7 @@ TODO-2 : Definieer services en bijbehorende objecten in: translate.proto
 - en definieer bovengenoemde protobuf messages:
 1. TranslateStringMsg met daarin een: Language : lang en string : line
 2. TranslateStringListMsg met daarin een: Language : lang en een lijst van (string : line)
-3. ResponseKeyMsg met daarin eem string : responseKey 
+3. ResponseKeyMsg met daarin een string : responseKey 
 
 TODO-3 : Compileer deze proto file
 - vanaf de cmd-line in de folder waar de pom.xml staat, tot de volgende buids succesvol zijn.
@@ -28,11 +28,12 @@ mvn protobuf-custom
 - refresh je workspace, waarna alle compile errors weg zouden moeten zijn.
 
 TODO-4 : Edit TranslateServer.java zodat deze gestart kan worden
-- modify buildSimpleServer (zie hints start unsecure server/client)
+- edit methode buildSimpleServer() (zie hints start unsecure server/client)
 - deze class zou nu zonder problemen als Java application kunnen starten.
 
 TODO-5 : Edit TranslateClient.java zodat deze gestart kan worden
-- modify buildSimpleChannel()  (zie hints start unsecure server/client)
+- edit methode buildSimpleChannel()  (zie hints start unsecure server/client)
+- edit constructor TranslateClient() om de stubs te maken.
 - deze class zou nu zonder problemen als Java application kunnen starten en via de console kun je deze ook weer stoppen.
 
 TODO-6 : Implementeer nu de eerste aktie, een single line translate 

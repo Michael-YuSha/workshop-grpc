@@ -10,7 +10,7 @@ server = ServerBuilder.forPort(int).addService(grpc-service-impl).build();
 server.start();
 
 - client: 
-channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext(true));
+channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext(true).???;
 blockingStub = XxxGrpc.newBlockingStub(channel);
 asyncStub = XxxGrpc.newStub(channel);
   
@@ -21,7 +21,7 @@ NB Bovenstaande GrpcUtils bevatten maar een van de mogelijke setups om een secur
 Deze maakt gebruik van OpenSSL, en daarom moet de netty-tcnative-boringssl-static ook in de pom.xml staam!
 
 # Implement van een blocking (non streaming) rpc :
-- server: 
+- server(impl): 
 maak class aan die extend van XxxGrpc.XxxImplBase en laat Eclipse de methodes implementeren.
 responseObserver.onNext(reponse-message);  //maak één response message aan.
 responseObserver.complete(); //en dit zorgt ervoor dat die daadwerkelijk verstuurd wordt.
