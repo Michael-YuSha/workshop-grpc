@@ -13,7 +13,9 @@ server.start();
 channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext(true).???;
 blockingStub = XxxGrpc.newBlockingStub(channel);
 asyncStub = XxxGrpc.newStub(channel);
-  
+
+NB: zie constants in TranslateServer voor host en port !
+
 # Starten van een secure server / client
 - server: zie GrpcUtils.serverBuilder()
 - client: zie GrpcUtils.makeChannel()
@@ -35,11 +37,3 @@ en stuur deze met: blockingStub.rpc-methode(request-message);
 Min of meer hetzelfde patroon als hierboven maar nu is er naast een responseObserver ook een StreamObserver<T> die geimplementeerd moet worden.
 Deze StreamObserver wordt naar de client gestuurd, en die kan met onNext(message) daar requests op zetten, en met onCompleted() aangeven dat de 
 stream sessie kan worden gestopt.
-
- 
-
-
-
-
-
-
